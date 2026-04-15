@@ -11,9 +11,32 @@ export const fetchListUsers= createAsyncThunk(
 export const createNewUser= createAsyncThunk(
   'users/createNewUser',
   async (userData: Omit<User, 'id'>, thunkAPI) => {
-    console.log(userData);
+    // console.log(userData);
     const res = await fetch("http://localhost:8000/users", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: userData.email,
+        name: userData.name,
+      })
+    });
+    const data = await res.json();
+    // console.log(">>> check data create: ", data);
+    if(data && data.id){
+      thunkAPI.dispatch(fetchListUsers());
+      // console.log(">>> check data create: ", data);
+    }
+    return data; 
+  }
+)
+export const updateUser= createAsyncThunk(
+  'users/updateUser',
+  async (userData: Partial<User> & { id: number }, thunkAPI) => {
+    // console.log(userData);
+    const res = await fetch(`http://localhost:8000/users/${userData.id}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
@@ -39,9 +62,11 @@ interface User {
 const initialState : {
   listUsers: User[];
   isCreateUserSuccess: boolean;
+  isUpdateUserSuccess: boolean;
 } = {
   listUsers: [],
   isCreateUserSuccess: false,
+  isUpdateUserSuccess: false,
 }
 
 export const userSlice = createSlice({
@@ -50,6 +75,9 @@ export const userSlice = createSlice({
   reducers: {
     resetCreate(state, _) {
       state.isCreateUserSuccess = false;
+    },
+    resetUpdate(state, _) {
+      state.isUpdateUserSuccess = false;
     }
   },
   extraReducers: (builder) => {
@@ -66,11 +94,17 @@ export const userSlice = createSlice({
       // state.listUsers = [...state.listUsers, action.payload];
       state.isCreateUserSuccess = true;
     });
+    builder.addCase(updateUser.fulfilled, (state, action) => {
+      // Add user to the state array
+      // console.log(action.payload);
+      // state.listUsers = [...state.listUsers, action.payload];
+      state.isUpdateUserSuccess = true;
+    });
   }
 })
 
 // Action creators are generated for each case reducer function
-export const { resetCreate } = userSlice.actions
+export const { resetCreate, resetUpdate } = userSlice.actions
 // decrement, incrementByAmount
 
 export default userSlice.reducer

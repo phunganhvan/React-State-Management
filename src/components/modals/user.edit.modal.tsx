@@ -3,15 +3,17 @@ import Modal from 'react-bootstrap/Modal';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import { useState, useEffect } from 'react';
-
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { updateUser, resetUpdate } from '../../redux/user/user.slide';
+import { toast } from 'react-toastify';
 const UserEditModal = (props: any) => {
     const { isOpenUpdateModal, setIsOpenUpdateModal, dataUser } = props;
-
+    const dispatch = useAppDispatch();
     const [id, setId] = useState();
 
     const [email, setEmail] = useState<string>("");
     const [name, setName] = useState<string>("");
-
+    const isUpdateSuccess = useAppSelector((state) => state.user.isUpdateUserSuccess);
     useEffect(() => {
         if (dataUser?.id) {
             setId(dataUser?.id);
@@ -20,6 +22,15 @@ const UserEditModal = (props: any) => {
         }
     }, [dataUser])
 
+    useEffect(() => {
+        if(isUpdateSuccess){
+            toast('🦄 Wow so easy! Update succeed');
+            setIsOpenUpdateModal(false);
+            setEmail("");
+            setName("");
+            dispatch(resetUpdate());
+        }
+    }, [isUpdateSuccess]);
     const handleSubmit = () => {
         if (!email) {
             alert("email empty");
@@ -29,7 +40,8 @@ const UserEditModal = (props: any) => {
             alert("name empty");
             return;
         }
-        console.log(">>> check update: ", { email, name, id })
+        // console.log(">>> check update: ", { email, name, id })
+        dispatch(updateUser({ email, name, id }));
     }
 
     return (
