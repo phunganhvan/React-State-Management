@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 // import type { PayloadAction } from '@reduxjs/toolkit'
-export const fetchListUsers= createAsyncThunk(
+export const fetchListUsers = createAsyncThunk(
   'users/fetchListUsers',
   async (userId: number, thunkAPI) => {
     const res = await fetch("http://localhost:8000/users");
     const data = await res.json();
-    return data; 
+    return data;
   }
 )
-export const createNewUser= createAsyncThunk(
+export const createNewUser = createAsyncThunk(
   'users/createNewUser',
   async (userData: Omit<User, 'id'>, thunkAPI) => {
     // console.log(userData);
@@ -24,14 +24,14 @@ export const createNewUser= createAsyncThunk(
     });
     const data = await res.json();
     // console.log(">>> check data create: ", data);
-    if(data && data.id){
+    if (data && data.id) {
       thunkAPI.dispatch(fetchListUsers());
       // console.log(">>> check data create: ", data);
     }
-    return data; 
+    return data;
   }
 )
-export const updateUser= createAsyncThunk(
+export const updateUser = createAsyncThunk(
   'users/updateUser',
   async (userData: Partial<User> & { id: number }, thunkAPI) => {
     // console.log(userData);
@@ -47,14 +47,14 @@ export const updateUser= createAsyncThunk(
     });
     const data = await res.json();
     // console.log(">>> check data create: ", data);
-    if(data && data.id){
+    if (data && data.id) {
       thunkAPI.dispatch(fetchListUsers());
       // console.log(">>> check data create: ", data);
     }
-    return data; 
+    return data;
   }
 )
-export const deleteUser= createAsyncThunk(
+export const deleteUser = createAsyncThunk(
   'users/deleteUser',
   async (userData: Partial<User> & { id: number }, thunkAPI) => {
     // console.log(userData);
@@ -67,7 +67,7 @@ export const deleteUser= createAsyncThunk(
     const data = await res.json();
     // console.log(">>> check data create: ", data);
     thunkAPI.dispatch(fetchListUsers());
-    return data; 
+    return data;
   }
 )
 interface User {
@@ -75,7 +75,7 @@ interface User {
   name: string;
   email: string;
 }
-const initialState : {
+const initialState: {
   listUsers: User[];
   isCreateUserSuccess: boolean;
   isUpdateUserSuccess: boolean;
@@ -108,26 +108,26 @@ export const userSlice = createSlice({
       // Add user to the state array
       // console.log(action.payload);
       state.listUsers = action.payload;
-      
-    });
-    builder.addCase(createNewUser.fulfilled, (state, action) => {
-      // Add user to the state array
-      // console.log(action.payload);
-      // state.listUsers = [...state.listUsers, action.payload];
-      state.isCreateUserSuccess = true;
-    });
-    builder.addCase(updateUser.fulfilled, (state, action) => {
-      // Add user to the state array
-      // console.log(action.payload);
-      // state.listUsers = [...state.listUsers, action.payload];
-      state.isUpdateUserSuccess = true;
-    });
-    builder.addCase(deleteUser.fulfilled, (state, action) => {
-      // Add user to the state array
-      // console.log(action.payload);
-      // state.listUsers = [...state.listUsers, action.payload];
-      state.isDeleteUserSuccess = true;
-    });
+
+    })
+      .addCase(createNewUser.fulfilled, (state, action) => {
+        // Add user to the state array
+        // console.log(action.payload);
+        // state.listUsers = [...state.listUsers, action.payload];
+        state.isCreateUserSuccess = true;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        // Add user to the state array
+        // console.log(action.payload);
+        // state.listUsers = [...state.listUsers, action.payload];
+        state.isUpdateUserSuccess = true;
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        // Add user to the state array
+        // console.log(action.payload);
+        // state.listUsers = [...state.listUsers, action.payload];
+        state.isDeleteUserSuccess = true;
+      });
   }
 })
 
