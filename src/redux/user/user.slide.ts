@@ -54,6 +54,22 @@ export const updateUser= createAsyncThunk(
     return data; 
   }
 )
+export const deleteUser= createAsyncThunk(
+  'users/deleteUser',
+  async (userData: Partial<User> & { id: number }, thunkAPI) => {
+    // console.log(userData);
+    const res = await fetch(`http://localhost:8000/users/${userData.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+    });
+    const data = await res.json();
+    // console.log(">>> check data create: ", data);
+    thunkAPI.dispatch(fetchListUsers());
+    return data; 
+  }
+)
 interface User {
   id: number;
   name: string;
@@ -63,10 +79,12 @@ const initialState : {
   listUsers: User[];
   isCreateUserSuccess: boolean;
   isUpdateUserSuccess: boolean;
+  isDeleteUserSuccess: boolean;
 } = {
   listUsers: [],
   isCreateUserSuccess: false,
   isUpdateUserSuccess: false,
+  isDeleteUserSuccess: false,
 }
 
 export const userSlice = createSlice({
@@ -78,7 +96,11 @@ export const userSlice = createSlice({
     },
     resetUpdate(state, _) {
       state.isUpdateUserSuccess = false;
+    },
+    resetDelete(state, _) {
+      state.isDeleteUserSuccess = false;
     }
+
   },
   extraReducers: (builder) => {
     // add reducers for additional action types here, and handle loading state as needed
@@ -100,11 +122,17 @@ export const userSlice = createSlice({
       // state.listUsers = [...state.listUsers, action.payload];
       state.isUpdateUserSuccess = true;
     });
+    builder.addCase(deleteUser.fulfilled, (state, action) => {
+      // Add user to the state array
+      // console.log(action.payload);
+      // state.listUsers = [...state.listUsers, action.payload];
+      state.isDeleteUserSuccess = true;
+    });
   }
 })
 
 // Action creators are generated for each case reducer function
-export const { resetCreate, resetUpdate } = userSlice.actions
+export const { resetCreate, resetUpdate, resetDelete } = userSlice.actions
 // decrement, incrementByAmount
 
 export default userSlice.reducer
