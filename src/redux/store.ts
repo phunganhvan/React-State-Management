@@ -2,6 +2,7 @@ import { configureStore, combineReducers} from '@reduxjs/toolkit'
 import counterReducer from './counter/counter.slide'
 import userReducer from './user/user.slide'
 import appReducer from './app/app.slide'
+import  blogReducer  from './blog/blog.slide'
 import {
   persistStore,
   persistReducer,
@@ -14,6 +15,7 @@ import {
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
+
 const persistConfig = {
   key: 'root',
   version: 1,
@@ -24,6 +26,7 @@ const rootReducer = combineReducers({
   counter: counterReducer,
   user: userReducer,
   app: appReducer,
+  blog: blogReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

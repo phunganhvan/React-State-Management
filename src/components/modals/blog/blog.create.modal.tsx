@@ -3,39 +3,45 @@ import Modal from 'react-bootstrap/Modal';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { createNewUser, resetCreate } from '../../redux/user/user.slide';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { createNewBlog, resetCreate } from '../../../redux/blog/blog.slide';
 import { toast } from 'react-toastify';
 
-interface ICreateUser {
+interface ICreateBlog {
     isOpenCreateModal: boolean;
     setIsOpenCreateModal: (isOpen: boolean) => void;
 }
-const UserCreateModal = (props: ICreateUser) => {
+const BlogCreateModal = (props: ICreateBlog) => {
     const { isOpenCreateModal, setIsOpenCreateModal } = props;
 
-    const [email, setEmail] = useState<string>("");
-    const [name, setName] = useState<string>("");
+    const [title, setTitle] = useState<string>("");
+    const [author, setAuthor] = useState<string>("");
+    const [content, setContent] = useState<string>("");
     const dispatch = useAppDispatch();
     const handleSubmit = () => {
-        if (!email) {
-            alert("email empty");
+        if (!title) {
+            alert("title empty");
             return;
         }
-        if (!name) {
-            alert("name empty");
+        if (!author) {
+            alert("author empty");
             return;
         }
-        dispatch(createNewUser({ email, name }));
-        
-        // console.log(">>> check create: ", { email, name })
+        if (!content) {
+            alert("content empty");
+            return;
+        }
+        dispatch(createNewBlog({ title, author, content }));
+
+        // console.log(">>> check create: ", { title, author })
     }
-    const isCreateSuccess = useAppSelector((state) => state.user.isCreateUserSuccess);
+    const isCreateSuccess = useAppSelector((state) => state.blog.isCreateBlogSuccess);
     useEffect(() => {
-        if(isCreateSuccess){
+        if (isCreateSuccess) {
             setIsOpenCreateModal(false);
-            setEmail("");
-            setName("");
+            setTitle("");
+            setAuthor("");
+            setContent("");
             toast('🦄 Wow so easy! Create succeed');
             // reset redux
             dispatch(resetCreate());
@@ -52,25 +58,34 @@ const UserCreateModal = (props: ICreateUser) => {
             >
                 <Modal.Header closeButton>
                     <Modal.Title>
-                        Add A New User
+                        Add A New Blog
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <FloatingLabel
-                        label="Email"
+                        label="Title"
                         className="mb-3"
                     >
                         <Form.Control
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
                             type="text"
                         />
                     </FloatingLabel>
-                    <FloatingLabel label="Name">
+                    <FloatingLabel label="Author" style={{marginBottom: "10px"}}>
                         <Form.Control
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            value={author}
+                            onChange={(e) => setAuthor(e.target.value)}
                             type="text"
+                        />
+                    </FloatingLabel>
+                    <FloatingLabel label="Content">
+                        <Form.Control
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            as="textarea"
+                            placeholder="Content"
+                            style={{ height: '100px' }}
                         />
                     </FloatingLabel>
                 </Modal.Body>
@@ -85,4 +100,4 @@ const UserCreateModal = (props: ICreateUser) => {
     )
 }
 
-export default UserCreateModal;
+export default BlogCreateModal;

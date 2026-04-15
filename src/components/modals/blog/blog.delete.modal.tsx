@@ -1,20 +1,31 @@
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { deleteUser, resetDelete } from '../../redux/user/user.slide';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { deleteBlog, resetDelete } from '../../../redux/blog/blog.slide';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
+interface IBlog {
+    id: number;
+    title: string;
+    author: string;
+    content: string;
+}
+interface IProps {
+    dataBlog: IBlog;
+    isOpenDeleteModal: boolean;
+    setIsOpenDeleteModal: (isOpen: boolean) => void;
+}
 
-const UserDeleteModal = (props: any) => {
-    const { dataUser, isOpenDeleteModal, setIsOpenDeleteModal } = props;
+const BlogDeleteModal = (props: IProps) => {
+    const { dataBlog, isOpenDeleteModal, setIsOpenDeleteModal } = props;
     const dispatch = useAppDispatch();
-    const isDeleteSuccess = useAppSelector((state) => state.user.isDeleteUserSuccess);
+    const isDeleteSuccess = useAppSelector((state) => state.blog.isDeleteBlogSuccess);
     const handleSubmit = () => {
-        // console.log(">>> check delete: ", { id: dataUser?.id ?? "" })
-        dispatch(deleteUser({ id: dataUser?.id ?? 0 }));
+        // console.log(">>> check delete: ", { id: dataBlog?.id ?? "" })
+        dispatch(deleteBlog({ id: dataBlog?.id ?? 0 }));
     }
     useEffect(() => {
-        if(isDeleteSuccess){
+        if (isDeleteSuccess) {
             setIsOpenDeleteModal(false);
             toast('🦄 Wow so easy! Delete succeed');
             dispatch(resetDelete());
@@ -31,11 +42,11 @@ const UserDeleteModal = (props: any) => {
         >
             <Modal.Header closeButton>
                 <Modal.Title>
-                    Delete A User
+                    Delete A Blog
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                Delete the user: {dataUser?.email ?? ""}
+                Delete the blog: {dataBlog?.title ?? ""}
             </Modal.Body>
             <Modal.Footer>
                 <Button
@@ -47,4 +58,4 @@ const UserDeleteModal = (props: any) => {
     )
 }
 
-export default UserDeleteModal;
+export default BlogDeleteModal;

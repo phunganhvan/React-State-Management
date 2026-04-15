@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 // import type { PayloadAction } from '@reduxjs/toolkit'
 export const fetchListUsers = createAsyncThunk(
   'users/fetchListUsers',
-  async (userId: number, thunkAPI) => {
+  async () => {
+    // userId: number, thunkAPI
     const res = await fetch("http://localhost:8000/users");
     const data = await res.json();
     return data;
@@ -91,13 +92,13 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    resetCreate(state, _) {
+    resetCreate(state) {
       state.isCreateUserSuccess = false;
     },
-    resetUpdate(state, _) {
+    resetUpdate(state) {
       state.isUpdateUserSuccess = false;
     },
-    resetDelete(state, _) {
+    resetDelete(state) {
       state.isDeleteUserSuccess = false;
     }
 
@@ -110,19 +111,19 @@ export const userSlice = createSlice({
       state.listUsers = action.payload;
 
     })
-      .addCase(createNewUser.fulfilled, (state, action) => {
+      .addCase(createNewUser.fulfilled, (state) => {
         // Add user to the state array
         // console.log(action.payload);
         // state.listUsers = [...state.listUsers, action.payload];
         state.isCreateUserSuccess = true;
       })
-      .addCase(updateUser.fulfilled, (state, action) => {
+      .addCase(updateUser.fulfilled, (state) => {
         // Add user to the state array
         // console.log(action.payload);
         // state.listUsers = [...state.listUsers, action.payload];
         state.isUpdateUserSuccess = true;
       })
-      .addCase(deleteUser.fulfilled, (state, action) => {
+      .addCase(deleteUser.fulfilled, (state) => {
         // Add user to the state array
         // console.log(action.payload);
         // state.listUsers = [...state.listUsers, action.payload];

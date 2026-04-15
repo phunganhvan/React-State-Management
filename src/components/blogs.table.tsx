@@ -1,43 +1,50 @@
 import Table from 'react-bootstrap/Table';
 import { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { fetchListUsers } from '../redux/user/user.slide';
+import { fetchListBlogs } from '../redux/blog/blog.slide';
 import Button from 'react-bootstrap/Button';
-import UserCreateModal from './modals/users/user.create.modal';
-import UserEditModal from './modals/users/user.edit.modal';
-import UserDeleteModal from './modals/users/user.delete.modal';
+import BlogCreateModal from './modals/blog/blog.create.modal';
+import BlogDeleteModal from './modals/blog/blog.delete.modal';
+import BlogEditModal from './modals/blog/blog.edit.modal';
+// import blogEditModal from './modals/Blogs/blog.edit.modal';
+// import blogDeleteModal from './modals/Blogs/blog.delete.modal';
+interface IBlog {
+    id: number;
+    title: string;
+    author: string;
+    content: string;
+}
 
-function UsersTable() {
+function BlogsTable() {
 
     const dispatch = useAppDispatch();
-    const users = useAppSelector(state => state.user.listUsers);
+    const Blogs = useAppSelector(state => state.blog.listBlogs);
 
     const [isOpenCreateModal, setIsOpenCreateModal] = useState<boolean>(false);
 
     const [isOpenUpdateModal, setIsOpenUpdateModal] = useState<boolean>(false);
-    const [dataUser, setDataUser] = useState({});
-
+    const [dataBlog, setDataBlog] = useState<IBlog>({});
     const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
 
     useEffect(() => {
-        dispatch(fetchListUsers())
+        dispatch(fetchListBlogs())
         // toast.success("fetch success")
     }, [])
 
-    const handleEditUser = (user: any) => {
-        setDataUser(user);
+    const handleEditBlog = (blog: IBlog) => {
+        setDataBlog(blog);
         setIsOpenUpdateModal(true);
     }
 
-    const handleDelete = (user: any) => {
-        setDataUser(user);
+    const handleDelete = (blog: IBlog) => {
+        setDataBlog(blog);
         setIsOpenDeleteModal(true);
     }
 
     return (
         <>
             <div style={{ display: "flex", justifyContent: "space-between", margin: "15px 0" }}>
-                <h4>Table Users</h4>
+                <h4>Table Blogs</h4>
                 <Button variant="primary"
                     onClick={() => setIsOpenCreateModal(true)}
                 >Add New</Button>
@@ -46,28 +53,30 @@ function UsersTable() {
                 <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Name</th>
-                        <th>Email</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Content</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {users?.map(user => {
+                    {Blogs?.map((blog: IBlog) => {
                         return (
-                            <tr key={user.id}>
-                                <td>{user.id}</td>
-                                <td>{user.name}</td>
-                                <td>{user.email}</td>
+                            <tr key={blog.id}>
+                                <td>{blog.id}</td>
+                                <td>{blog.title}</td>
+                                <td>{blog.author}</td>
+                                <td>{blog.content}</td>
                                 <td>
                                     <Button
                                         variant="warning"
-                                        onClick={() => handleEditUser(user)}
+                                        onClick={() => handleEditBlog(blog)}
                                     >
                                         Edit
                                     </Button>&nbsp;&nbsp;&nbsp;
                                     <Button
                                         variant="danger"
-                                        onClick={() => handleDelete(user)}
+                                        onClick={() => handleDelete(blog)}
                                     >
                                         Delete
                                     </Button>
@@ -78,19 +87,19 @@ function UsersTable() {
                 </tbody>
             </Table>
 
-            <UserCreateModal
+            <BlogCreateModal
                 isOpenCreateModal={isOpenCreateModal}
                 setIsOpenCreateModal={setIsOpenCreateModal}
             />
 
-            <UserEditModal
+            <BlogEditModal
                 isOpenUpdateModal={isOpenUpdateModal}
                 setIsOpenUpdateModal={setIsOpenUpdateModal}
-                dataUser={dataUser}
+                dataBlog={dataBlog}
             />
 
-            <UserDeleteModal
-                dataUser={dataUser}
+            <BlogDeleteModal
+                dataBlog={dataBlog}
                 isOpenDeleteModal={isOpenDeleteModal}
                 setIsOpenDeleteModal={setIsOpenDeleteModal}
             />
@@ -98,4 +107,4 @@ function UsersTable() {
     );
 }
 
-export default UsersTable;
+export default BlogsTable;
