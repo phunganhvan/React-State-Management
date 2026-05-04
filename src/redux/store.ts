@@ -15,7 +15,6 @@ import {
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
-
 const persistConfig = {
   key: 'root',
   version: 1,
@@ -28,9 +27,7 @@ const rootReducer = combineReducers({
   app: appReducer,
   blog: blogReducer,
 });
-
 const persistedReducer = persistReducer(persistConfig, rootReducer)
-
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
@@ -41,9 +38,7 @@ export const store = configureStore({
     }),
 })
 export const persistor = persistStore(store)
-
 //redux store
-
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}

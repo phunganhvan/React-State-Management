@@ -2,7 +2,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import { useSelector } from 'react-redux/es/hooks/useSelector';
 import Form from 'react-bootstrap/Form';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAppDispatch } from '../redux/hooks';
 import { changeMode } from '../redux/app/app.slide';
 const Header = () => {
